@@ -19,5 +19,8 @@ def merge_total(directory: str) -> None:
     if len(listdir) == 1:
         return
     merge_two_files(directory + 'file1.txt', directory + '/file2.txt', directory + 'final1.txt')
-    for i in range(2, len(listdir)):
-        merge_two_files(listdir[i], directory + 'final' + str(i-1) + '.txt', directory + 'final' + str(i) + '.txt')
+    while len(listdir) > 1:
+        merge_two_files(listdir[0], directory + 'final' + str(i-1) + '.txt', directory + 'final' + str(i) + '.txt')
+
+
+merge_total('indexes/')
