@@ -12,7 +12,7 @@ class Url:
     def get_url(self) -> str:
         return self._url
 
-    def get_html(self) -> 'Etree ':
+    def get_html(self) -> 'Etree':
         html_value = self._content
         parser = etree.HTMLParser()
         tree = etree.parse(StringIO(html_value), parser)
