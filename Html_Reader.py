@@ -22,7 +22,7 @@ class Html_Reader:
                         if words != "":
                             position_words[ps.stem(words)].append(position)
                             position += 1
-        for key, val in position_words:
+        for key, val in position_words.items():
             post = Posting(doc_id)
             post.add_pos(val)
             post.add_tf(len(val)/(position-1))
