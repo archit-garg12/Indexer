@@ -1,4 +1,7 @@
+
+from Url import Url
+
 class Html_Reader:
     def __init__(self):
 
-    def get_html(self, json_file):
+    def read_
