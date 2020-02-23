@@ -4,7 +4,7 @@ from collections import defaultdict
 import Posting
 
 class Html_Reader:
-    def read_file(self, root: 'etree', doc_id, inverted_index) -> None:
+    def read_file(self, root: 'etree', doc_id: int, inverted_index: {str:[Posting]}) -> None:
         ps = PorterStemmer()
         postion = 1
         postion_words = defaultdict(list)
