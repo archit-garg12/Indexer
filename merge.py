@@ -1,38 +1,43 @@
 import os
 
 
-def merge_two_files(file1: [str], file2: [str]) -> None:
+def merge_two_files(master: str, file2: str) -> None:
 
-    with open(file1, 'w') as f1, open(file2) as f2:
+    with open(master, 'r+') as m, open(file2) as f2:
+        master_file = m.readlines()
+        # clear master file
+        m.seek(0)
+        m.truncate(0)
+        compare_file = f2.readlines()
         next_line1 = 0
         next_line2 = 0
-        while next_line1 < len(file1) and next_line2 != '':
-            l1 = next_line1.split('#')
-            l2 = next_line2.split('#')
+        while next_line1 < len(master_file) and next_line2 < len(compare_file):
+            l1 = master_file[next_line1].split('#')
+            l2 = compare_file[next_line2].split('#')
             word1 = l1[0]
             word2 = l2[0]
             if word1 == word2:
                 combined = eval(l1[1]) + eval(l2[1])
-                f1.write(word1 + '#' + str(combined) + '#\n')
-                next_line1 = f1.readline()
-                next_line2 = f2.readline()
+                m.write(word1 + '#' + str(combined) + '#\n')
+                next_line1 += 1
+                next_line2 += 1
             elif word1 < word2:
-                f1.write(word1 + '#' + l1[1] + '#\n')
-                next_line1 = f1.readline()
+                m.write(word1 + '#' + l1[1] + '#\n')
+                next_line1 += 1
             elif word2 < word1:
-                f1.write(word2 + '#' + l2[1] + '#\n')
-                next_line2 = f2.readline()
-        while next_line1 != '':
-            l1 = next_line1.split('#')
+                m.write(word2 + '#' + l2[1] + '#\n')
+                next_line2 += 1
+        while next_line1 < len(master_file):
+            l1 = master_file[next_line1].split('#')
             word1 = l1[0]
-            f1.write(word1 + '#' + l1[1] + '#\n')
-            next_line1 = f1.readline()
+            m.write(word1 + '#' + l1[1] + '#\n')
+            next_line1 += 1
 
-        while next_line2 != '':
-            l2 = next_line2.split('#')
+        while next_line2 < len(compare_file):
+            l2 = compare_file[next_line2].split('#')
             word2 = l2[0]
-            f1.write(word2 + '#' + l2[1] + '#\n')
-            next_line2 = f2.readline()
+            m.write(word2 + '#' + l2[1] + '#\n')
+            next_line2 += 1
 
     # os.remove(file1)
     # os.remove(file2)
@@ -62,7 +67,7 @@ def merge_two_files(file1: [str], file2: [str]) -> None:
     #     increment f1
 
 
-# merge_two_files('indexes/file1.txt', 'indexes/file2.txt', 'indexes/final.txt')
+# merge_two_files('indexes/file1.txt', 'indexes/file2.txt')
 
 
 
@@ -73,14 +78,14 @@ def merge_total(directory: str) -> None:
     listdir = os.listdir(directory)
     if len(listdir) == 1:
         return
-    merge_two_files(directory + 'file1.txt', directory + 'file2.txt', directory + 'final1.txt')
+    # merge_two_files(directory + 'file1.txt', directory + 'file2.txt', directory + 'final1.txt')
     i = 2
-    while len(os.listdir('indexes/')) > 1:
-        merge_two_files(os.listdir('indexes/')[0], directory + 'final' + str(i-1) + '.txt', directory + 'final' + str(i) + '.txt')
+    master_file = 'indexes/inverted_index_1'
+    while i < len(listdir):
+        merge_two_files(master_file, 'indexes/inverted_index_' + str(i) + '.txt')
         i += 1
-        listdir = os.listdir('indexes/')
 
-
+merge_total('indexes/')
 # # merge_total('indexes/')
 # # print(os.listdir('indexes/'))
 # x = open('indexes/file3.txt')

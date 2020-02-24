@@ -1,3 +1,0 @@
-cat#[{'doc_id':1, 'positions': [1,2,3,4]}, {'doc_id':2, 'positions':[5,8,10]}]#
-dog#[{'doc_id':1, 'positions': [1,2,3,4]}, {'doc_id':2, 'positions':[5,8,10]}]#
-fish#[{'doc_id':1, 'positions': [1,2,3,4]}, {'doc_id':2, 'positions':[5,8,10]}]#

@@ -1,4 +1,0 @@
-apple#[{'doc_id':5, 'positions': [1,2,3,4]}, {'doc_id':6, 'positions':[5,8,10]}]#
-cat#[{'doc_id': 1, 'positions': [1, 2, 3, 4]}, {'doc_id': 2, 'positions': [5, 8, 10]}, {'doc_id': 5, 'positions': [1, 2, 3, 4]}, {'doc_id': 6, 'positions': [5, 8, 10]}]#
-dog#[{'doc_id': 1, 'positions': [1, 2, 3, 4]}, {'doc_id': 2, 'positions': [5, 8, 10]}, {'doc_id': 5, 'positions': [1, 2, 3, 4]}, {'doc_id': 6, 'positions': [6, 8, 11]}]#
-fish#[{'doc_id':1, 'positions': [1,2,3,4]}, {'doc_id':2, 'positions':[5,8,10]}]#
