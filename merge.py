@@ -9,9 +9,9 @@ def merge_two_files(master: str, file2: str) -> None:
         m.seek(0)
         m.truncate(0)
         compare_file = f2.readlines()
-        next_line1 = 0
-        next_line2 = 0
-        while next_line1 < len(master_file) and next_line2 < len(compare_file):
+        next_line1 = 1
+        next_line2 = 1
+        while next_line1 < len(master_file)-1 and next_line2 < len(compare_file)-4:
             l1 = master_file[next_line1].split('#')
             l2 = compare_file[next_line2].split('#')
             word1 = l1[0]
@@ -27,15 +27,17 @@ def merge_two_files(master: str, file2: str) -> None:
             elif word2 < word1:
                 m.write(word2 + '#' + l2[1] + '#\n')
                 next_line2 += 1
-        while next_line1 < len(master_file):
+        while next_line1 < len(master_file)-1:
             l1 = master_file[next_line1].split('#')
             word1 = l1[0]
             m.write(word1 + '#' + l1[1] + '#\n')
             next_line1 += 1
 
-        while next_line2 < len(compare_file):
+        while next_line2 < len(compare_file)-4:
             l2 = compare_file[next_line2].split('#')
+            # print(next_line2, len(compare_file)-1)
             word2 = l2[0]
+            # print(l2)
             m.write(word2 + '#' + l2[1] + '#\n')
             next_line2 += 1
 
@@ -76,13 +78,16 @@ def merge_two_files(master: str, file2: str) -> None:
 
 def merge_total(directory: str) -> None:
     listdir = os.listdir(directory)
-    if len(listdir) == 1:
-        return
+    # if len(listdir) == 1:
+    #     return
     # merge_two_files(directory + 'file1.txt', directory + 'file2.txt', directory + 'final1.txt')
-    i = 2
-    master_file = 'indexes/inverted_index_1'
-    while i < len(listdir):
-        merge_two_files(master_file, 'indexes/inverted_index_' + str(i) + '.txt')
+    i = 1
+    master_file = 'indexes/index_master.txt'
+    while i <= 55:
+        print(i)
+        if i != 26:
+            merge_two_files(master_file, directory + 'inverted_index_' + str(i))
+            print(i, 'DONE')
         i += 1
 
 merge_total('indexes/')
