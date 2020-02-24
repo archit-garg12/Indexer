@@ -14,7 +14,9 @@ class Posting():
         return self.tf
     def get_doc_id(self) -> int:
         return self.doc_id
-    
+    def __str__(self) -> str:
+        return str(self.__dict__)
+        
 
 
     

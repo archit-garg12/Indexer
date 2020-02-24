@@ -4,7 +4,7 @@ import json
 
 class Url:
     def __init__(self, json_file: str):
-        with open(json_file) as json_file:
+        with open(json_file, encoding = 'utf-8') as json_file:
             data = json.load(json_file)
             self._url = data['url']
             self._content = data['content']
@@ -14,7 +14,12 @@ class Url:
 
     def get_html(self) -> 'Etree':
         html_value = self._content
+        print(1)
         parser = etree.HTMLParser()
+        print(2)
+        # print(StringIO(html_value))
         tree = etree.parse(StringIO(html_value), parser)
+        print(3)
+        print(type(tree.getroot()))
         return tree.getroot()
 
