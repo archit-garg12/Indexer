@@ -1,11 +1,13 @@
-import Posting
+from Posting import Posting
 import Indexer
-import Url
-import Html_Reader
+from Url import Url
+from Html_Reader import Html_Reader
 
 
 
 
 
-if name == "__main__":
+if __name__ == "__main__":
     print("done")
+    Indexer.get_all_files('DEV/')
+    
