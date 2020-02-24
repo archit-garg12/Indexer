@@ -21,33 +21,42 @@ def get_all_files(dev_directory):
         if direct != '.DS_Store':
 
             for file in os.listdir(dev_directory + direct):
-                print(file_count)
+                doc_id += 1
+                print(doc_id)
+                # posting(file) returns url and stuff for DOC_ID_DICT and for tokenizer
+                temp = Url(dev_directory + direct + '/' + file)
+                print(dev_directory + direct + '/' + file)
+                # write to a file the current inverted index, if it is above a certain file count
+                file_count += 1
                 try:
-                    doc_id += 1
-                    # posting(file) returns url and stuff for DOC_ID_DICT and for tokenizer
-                    temp = Url(dev_directory + direct + '/' + file)
-                    print(dev_directory + direct + '/' + file)
-                    # write to a file the current inverted index, if it is above a certain file count
-                    file_count += 1
                     reader.read_file(temp.get_html(), doc_id, inverted_index)
-                    if file_count == 1000:
-                        with open(file_count_name + str(file_count_name_count), 'w+') as count:
-                            count.write('{\n')
-                            s = sorted(inverted_index.items(), key=lambda x: x[0])
-                            for k, v in s:
-                                count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
-                            count.write('}')
-                            count.write('\n\n\n\n')
-                        inverted_index = defaultdict(list)
-                    elif file_count > 1000:
-                        file_count_name_count += 1
-                        file_count = 0
-                        # adds the current dict to a file for a partial index
-                        # change file_count_name also to write to a different file
-                    DOC_ID_DICT[doc_id] = temp.get_url()
                 except Exception as e:
-                    with open('error.txt', 'a+') as error_file:
-                        error_file.write(str(e) + str(temp))
+                    with open('error.txt', 'w+') as error_file:
+                        error_file.write(str(e) + str(temp.get_url()) + "\n")
+                if file_count == 1000:
+                    with open(file_count_name + str(file_count_name_count), 'w+') as count:
+                        count.write('{\n')
+                        s = sorted(inverted_index.items(), key=lambda x: x[0])
+                        for k, v in s:
+                            count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
+                        count.write('}')
+                        count.write('\n\n\n\n')
+                    inverted_index = defaultdict(list)
+                elif file_count > 1000:
+                    file_count_name_count += 1
+                    file_count = 0
+                    # adds the current dict to a file for a partial index
+                    # change file_count_name also to write to a different file
+                DOC_ID_DICT[doc_id] = temp.get_url()
+            
+            with open(file_count_name + str(file_count_name_count), 'w+') as count:
+                count.write('{\n')
+                s = sorted(inverted_index.items(), key=lambda x: x[0])
+                for k, v in s:
+                    count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
+                count.write('}')
+                count.write('\n\n\n\n')
+                inverted_index = defaultdict(list)        
 
 
 def test():
