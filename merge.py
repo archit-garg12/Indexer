@@ -83,7 +83,7 @@ def merge_total(directory: str) -> None:
     # merge_two_files(directory + 'file1.txt', directory + 'file2.txt', directory + 'final1.txt')
     i = 1
     master_file = 'indexes/index_master.txt'
-    while i <= 55:
+    while i <= 56:
         print(i)
         merge_two_files(master_file, directory + 'inverted_index_' + str(i))
         print(i, 'DONE')

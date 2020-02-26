@@ -34,13 +34,7 @@ def get_all_files(dev_directory):
                     with open('error.txt', 'w+') as error_file:
                         error_file.write(str(e) + str(temp.get_url()) + "\n")
                 if file_count == 1000:
-                    with open(file_count_name + str(file_count_name_count), 'w+') as count:
-                        count.write('{\n')
-                        s = sorted(inverted_index.items(), key=lambda x: x[0])
-                        for k, v in s:
-                            count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
-                        count.write('}')
-                        count.write('\n\n\n\n')
+                    write_to_index(inverted_index, file_count_name_count, file_count_name)
                     inverted_index = defaultdict(list)
                 elif file_count > 1000:
                     file_count_name_count += 1
@@ -48,17 +42,40 @@ def get_all_files(dev_directory):
                     # adds the current dict to a file for a partial index
                     # change file_count_name also to write to a different file
                 DOC_ID_DICT[doc_id] = temp.get_url()
-            
-            with open(file_count_name + str(file_count_name_count), 'w+') as count:
-                count.write('{\n')
-                s = sorted(inverted_index.items(), key=lambda x: x[0])
-                for k, v in s:
-                    count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
-                count.write('}')
-                count.write('\n\n\n\n')
-                inverted_index = defaultdict(list)        
+    write_to_index(inverted_index, file_count_name_count,file_count_name)
+    write_doc_ids(DOC_ID_DICT)        
 
+def write_doc_ids(ids):
+    with open("doc_ids.txt", "w+") as id:
+        id.write(str(ids))
 
+def write_to_index(inverted_index, file_count_name_count, file_count_name):
+     with open(file_count_name + str(file_count_name_count), 'w+') as count:
+        count.write('{\n')
+        s = sorted(inverted_index.items(), key=lambda x: x[0])
+        for k, v in s:
+            count.write(str(k) + '#' + str([str(x) for x in v]) + '#\n')
+        count.write('}')
+        count.write('\n\n\n\n')
+
+def index_index():
+    alpha = {}
+    with open('indexes/index_master.txt', "r") as master:
+        alpha["0"]= 0
+        prev_letter = "0"
+        seek = 0
+        for lines in master:
+            if lines[0] != prev_letter:
+                alpha[lines[0]] = seek
+            seek += len(lines)
+            prev_letter = lines[0]
+        alpha["end"] = seek
+    with open("indexes/index_index.txt", "w+") as i:
+        i.write(str(alpha))
+def index_index_object():
+    with open("indexes/index_index.txt", "r") as i:
+        alpha = eval(i.readline().strip("\n"))
+    return alpha
 def test():
     # for file in os.listdir('DEV/aiclub_ics_uci_edu'):
     #     print(file)
@@ -67,11 +84,8 @@ def test():
 
     inv = defaultdict(list)
     temp = Url('DEV/aiclub_ics_uci_edu/8ef6d99d9f9264fc84514cdd2e680d35843785310331e1db4bbd06dd2b8eda9b.json')
-    print('penis lover 3000')
     reader = Html_Reader()
-    print('fuck you krish')
     reader.read_file(temp.get_html(), 1, inv)
-    print('krish doesnt like us anymore')
     # print(str(inv["ami"][0]))
     with open(file_count_name, 'w+', encoding = 'utf-8') as count:
         count.write('{\n')
