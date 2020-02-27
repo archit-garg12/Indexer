@@ -3,29 +3,33 @@ import Indexer
 from Url import Url
 from Html_Reader import Html_Reader
 from Query import Query
+from flask import Flask
 # from Query import Query
 
 
+app = Flask(__name__)
 
-if __name__ == "__main__":
+@app.route("/")
+def hello_world():
+    return 'Hello, World!'
 
-    # reader = Html_Reader()
-    # reader.read_master_for_id("indexes/index_master.txt", "indexes/index_master_final.txt")
-    # Indexer.get_all_files('DEV/')
-    #merge_total('indexes/')
-    # Indexer.index_index()
-    mapping = {}
-    reader = Html_Reader()
-    query = "gays"
-    query = reader.porter_stem(query)
-    q = Query(query, Indexer.index_index_object())
-    important = q.retrieve_query()
+# if __name__ == "__main__":
 
-    with open("indexes/doc_ids.txt", "r") as ids:
-        mapping = eval(ids.readline())
+#     # reader = Html_Reader()
+#     # reader.read_master_for_id("indexes/index_master.txt", "indexes/index_master_final.txt")
+#     # Indexer.get_all_files('DEV/')
+#     #merge_total('indexes/')
+#     # Indexer.index_index()
+#     index = Indexer.index_index_object2()
+#     mapping = {}
+#     query = "machine learning"
+#     q = Query(query, index)
+#     important = q.retrieve_query()
+#     with open("indexes/doc_ids.txt", "r") as ids:
+#         mapping = eval(ids.readline())
         
-    for x in important:
-        print(mapping[x])
+#     for x in important:
+#         print(mapping[x[0]])
 
 
     

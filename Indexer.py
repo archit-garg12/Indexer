@@ -61,19 +61,29 @@ def write_to_index(inverted_index, file_count_name_count, file_count_name):
 def index_index():
     alpha = {}
     with open('indexes/index_master.txt', "r") as master:
-        alpha["0"]= 0
-        prev_letter = "0"
         seek = 0
         for lines in master:
-            if lines[0] != prev_letter:
-                alpha[lines[0]] = seek
+            line = lines.split("#")
+            alpha[line[0]] = seek
             seek += len(lines)
-            prev_letter = lines[0]
-        alpha["end"] = seek
-    with open("indexes/index_index.txt", "w+") as i:
+            
+        # alpha["0"]= 0
+        # prev_letter = "0"
+        # seek = 0
+        # for lines in master:
+        #     if lines[0] != prev_letter:
+        #         alpha[lines[0]] = seek
+        #     seek += len(lines)
+        #     prev_letter = lines[0]
+        # alpha["end"] = seek
+    with open("indexes/index_index2.txt", "w+") as i:
         i.write(str(alpha))
 def index_index_object():
     with open("indexes/index_index.txt", "r") as i:
+        alpha = eval(i.readline().strip("\n"))
+    return alpha
+def index_index_object2():
+    with open("indexes/index_index2.txt", "r") as i:
         alpha = eval(i.readline().strip("\n"))
     return alpha
 def test():
