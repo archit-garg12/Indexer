@@ -54,13 +54,15 @@ class Query():
         #sort dict by length of postings so process less posting lists first to easily determine overlap over multiple terms
         useful_query = sorted(useful_query.items(), key = lambda x: len(x[1]))
         document_ranks = defaultdict(int)
+        postings_collection = defaultdict(list)
         accum = []
         for lists in useful_query:
             for l in lists[1]:
                 p = Posting(eval(l))
                 document_ranks[p.get_doc_id()] += 1
+                postings_collection[p.get_doc_id()].append(p)
                 if document_ranks[p.get_doc_id()] == len(useful_query):
-                    accum.append((p.get_doc_id(),p))
+                    accum.append((p.get_doc_id(),postings_collection[p.get_doc_id()]))
         document_ranks = {}
         accum = sorted(accum, key = lambda x: -self._rank(x[1]))
         return accum
@@ -68,10 +70,13 @@ class Query():
                     
 
     def _rank(self, posting):
-        if posting.get_importance() != []:
-            return len(posting.get_importance())* 1.27 * posting.get_tf()
-        else:
-            return posting.get_tf()
+        accum = 0
+        for p in posting:
+            if p.get_importance() != []:
+                accum += len(p.get_importance())* 1.27 * p.get_tf()
+            else:
+                accum += p.get_tf()
+        return accum
 
 
 
