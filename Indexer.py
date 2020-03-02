@@ -21,15 +21,21 @@ def get_all_files(dev_directory):
         if direct != '.DS_Store':
 
             for file in os.listdir(dev_directory + direct):
-                doc_id += 1
-                print(doc_id)
+                
+                # print(doc_id)
                 # posting(file) returns url and stuff for DOC_ID_DICT and for tokenizer
                 temp = Url(dev_directory + direct + '/' + file)
                 print(dev_directory + direct + '/' + file)
-                # write to a file the current inverted index, if it is above a certain file count
-                file_count += 1
                 try:
-                    reader.read_file(temp.get_html(), doc_id, inverted_index)
+                    read = reader.read_file(temp.get_html(), doc_id, inverted_index)
+                    print(read)
+                    if read:
+                        doc_id += 1
+                        print(doc_id)
+                        # write to a file the current inverted index, if it is above a certain file count
+                        file_count += 1
+                        DOC_ID_DICT[doc_id] = temp.get_url()
+
                 except Exception as e:
                     with open('error.txt', 'w+') as error_file:
                         error_file.write(str(e) + str(temp.get_url()) + "\n")
@@ -41,7 +47,7 @@ def get_all_files(dev_directory):
                     file_count = 0
                     # adds the current dict to a file for a partial index
                     # change file_count_name also to write to a different file
-                DOC_ID_DICT[doc_id] = temp.get_url()
+                
     write_to_index(inverted_index, file_count_name_count,file_count_name)
     write_doc_ids(DOC_ID_DICT)        
 
@@ -60,28 +66,14 @@ def write_to_index(inverted_index, file_count_name_count, file_count_name):
 
 def index_index():
     alpha = {}
-    with open('indexes/index_master.txt', "r") as master:
+    with open('indexes/index_master_final.txt', "r") as master:
         seek = 0
         for lines in master:
             line = lines.split("#")
             alpha[line[0]] = seek
             seek += len(lines)
-            
-        # alpha["0"]= 0
-        # prev_letter = "0"
-        # seek = 0
-        # for lines in master:
-        #     if lines[0] != prev_letter:
-        #         alpha[lines[0]] = seek
-        #     seek += len(lines)
-        #     prev_letter = lines[0]
-        # alpha["end"] = seek
     with open("indexes/index_index2.txt", "w+") as i:
         i.write(str(alpha))
-def index_index_object():
-    with open("indexes/index_index.txt", "r") as i:
-        alpha = eval(i.readline().strip("\n"))
-    return alpha
 def index_index_object2():
     with open("indexes/index_index2.txt", "r") as i:
         alpha = eval(i.readline().strip("\n"))

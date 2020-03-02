@@ -7,29 +7,26 @@ from flask import Flask
 # from Query import Query
 
 
-app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-    return 'Hello, World!'
+if __name__ == "__main__":
 
-# if __name__ == "__main__":
-
-#     # reader = Html_Reader()
-#     # reader.read_master_for_id("indexes/index_master.txt", "indexes/index_master_final.txt")
-#     # Indexer.get_all_files('DEV/')
+    # reader = Html_Reader()
+    # reader.read_master_for_id("indexes/index_master.txt", "indexes/index_master_final.txt")
+    # Indexer.get_all_files('DEV/')
 #     #merge_total('indexes/')
-#     # Indexer.index_index()
-#     index = Indexer.index_index_object2()
-#     mapping = {}
-#     query = "machine learning"
-#     q = Query(query, index)
-#     important = q.retrieve_query()
-#     with open("indexes/doc_ids.txt", "r") as ids:
-#         mapping = eval(ids.readline())
+    # Indexer.index_index()
+    index = Indexer.index_index_object2()
+    mapping = {}
+    query = "machine learning"
+    q = Query(query, index)
+    important = q.retrieve_query()
+    with open("indexes/doc_ids.txt", "r") as ids:
+        mapping = eval(ids.readline())
         
-#     for x in important:
-#         print(mapping[x[0]])
+    for x in important[0:5]:
+        print(mapping[x[0]])
+        for p in x[1]:
+            print(p.get_doc_id())
 
 
     

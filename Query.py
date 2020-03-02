@@ -2,6 +2,7 @@ import os
 from Posting import Posting
 from collections import defaultdict
 from Html_Reader import Html_Reader
+import math
 class Query():
     def __init__(self, query, index):
         reader = Html_Reader()
@@ -18,7 +19,7 @@ class Query():
         self.index = index
     def retrieve_query(self):
         useful_query = {}
-        with open("indexes/index_master.txt", "r") as master:
+        with open("indexes/index_master_final.txt", "r") as master:
             print(self.query)
             for words in self.query:
                 #for each word limits range to first letter of word
@@ -33,10 +34,10 @@ class Query():
                 # mid = int((curr + final)/2)doc_list = []
                 # master.seek(curr, 0)
                 #read each line and check if the first
-                words 
                 if words in self.index:
-                    
+                    # print(self.index[words])
                     master.seek(self.index[words], 0)
+                    # print(master.readline().split("#")[0])
                     useful_query[words] = eval(master.readline().split("#")[1])
                 # while seek < final:
                     # s = master.readline()
@@ -63,6 +64,7 @@ class Query():
                 postings_collection[p.get_doc_id()].append(p)
                 if document_ranks[p.get_doc_id()] == len(useful_query):
                     accum.append((p.get_doc_id(),postings_collection[p.get_doc_id()]))
+        print([ (keys, document_ranks[keys])for keys in document_ranks if document_ranks[keys] ==  len(self.query)])
         document_ranks = {}
         accum = sorted(accum, key = lambda x: -self._rank(x[1]))
         return accum
@@ -73,9 +75,10 @@ class Query():
         accum = 0
         for p in posting:
             if p.get_importance() != []:
-                accum += len(p.get_importance())* 1.27 * p.get_tf()
+                accum += math.log(10 + len(p.get_importance())) * p.get_tfidf()
             else:
-                accum += p.get_tf()
+                accum += p.get_tfidf()
+        print(posting[1].get_doc_id(), accum)
         return accum
 
 
