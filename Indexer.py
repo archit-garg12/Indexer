@@ -13,7 +13,7 @@ def get_all_files(dev_directory):
     file_count_name = 'indexes/inverted_index_'
     file_count = 0
     file_count_name_count = 1
-    doc_id = 0
+    doc_id = 1
     inverted_index = defaultdict(list)
     reader = Html_Reader()
     for direct in os.listdir(dev_directory):
@@ -30,11 +30,11 @@ def get_all_files(dev_directory):
                     read = reader.read_file(temp.get_html(), doc_id, inverted_index)
                     print(read)
                     if read:
-                        doc_id += 1
                         print(doc_id)
                         # write to a file the current inverted index, if it is above a certain file count
                         file_count += 1
                         DOC_ID_DICT[doc_id] = temp.get_url()
+                        doc_id += 1
 
                 except Exception as e:
                     with open('error.txt', 'w+') as error_file:
@@ -78,6 +78,16 @@ def index_index_object2():
     with open("indexes/index_index2.txt", "r") as i:
         alpha = eval(i.readline().strip("\n"))
     return alpha
+def incerement_index():
+    fin = {}
+    with open("indexes/doc_ids.txt", "r") as ids:
+        with open("doc_ids.txt", "w+") as final:
+            p = eval(ids.readline())
+            for x in p:
+                fin[x-1] = p[x]
+            final.write(str(fin))
+
+
 def test():
     # for file in os.listdir('DEV/aiclub_ics_uci_edu'):
     #     print(file)

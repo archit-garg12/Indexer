@@ -74,7 +74,7 @@ class Html_Reader:
                 final = []
                 for x in temp:
                     p = Posting(eval(x))
-                    p.add_idf(math.log(55393/len(temp)))
+                    p.add_idf(math.log(43437/len(temp)))
                     p.add_tfidf()
                     final.append(p)
                 final = list(sorted(final , key= lambda x: -x.get_tfidf()))

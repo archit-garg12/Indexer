@@ -1,0 +1,2 @@
+cosine
+proximity of words

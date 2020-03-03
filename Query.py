@@ -78,7 +78,6 @@ class Query():
                 accum += math.log(10 + len(p.get_importance())) * p.get_tfidf()
             else:
                 accum += p.get_tfidf()
-        print(posting[1].get_doc_id(), accum)
         return accum
 
 
