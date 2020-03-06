@@ -9,7 +9,7 @@ class Html_Reader:
     def __init__(self):
         self.ps = SnowballStemmer("english")
         self.SIMHASH_URLS = {}
-    def read_file(self, root: 'etree', doc_id: int, inverted_index: {str:[Posting]}) -> None:
+    def read_file(self, root: 'etree', doc_id: int, inverted_index: {str:[Posting]}) -> bool:
         word = []
                         
         
@@ -48,13 +48,13 @@ class Html_Reader:
         for key, val in position_words.items():
             post = Posting(doc_id)
             post.add_pos(val)
-            post.add_tf((len(val) + len(importance_word[key]))/(position-1))
+            post.add_tf(len(val) + len(importance_word[key]))
             post.add_importance(importance_word[key])
             inverted_index[key].append(post)
         for key, val in importance_word.items():
             if key not in position_words:
                 post = Posting(doc_id)
-                post.add_tf((len(importance_word[key]))/(position-1))
+                post.add_tf(len(importance_word[key]))
                 post.add_importance(importance_word[key])
                 inverted_index[key].append(post)
         return True
@@ -72,17 +72,17 @@ class Html_Reader:
                 wording = word.split("#")
                 temp = eval(wording[1])
                 final = []
+                idf = math.log(43437/len(temp))
                 for x in temp:
                     p = Posting(eval(x))
-                    p.add_idf(math.log(43437/len(temp)))
+                    p.add_idf(idf)
                     p.add_tfidf()
                     final.append(p)
                 final = list(sorted(final , key= lambda x: -x.get_tfidf()))
-                wf.write(wording[0]+ "#" + str([str(x) for x in final]) + "#\n")               
+                wf.write(wording[0]+ "#" + str([str(x) for x in final]) + "#" + str(idf) + '#\n')
         wf.close()
 
 
-  
 
 
 

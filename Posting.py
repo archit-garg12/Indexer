@@ -27,7 +27,7 @@ class Posting():
     def add_pos(self, positions: list) -> None:
         self.pos = positions
     def add_tf(self, term_freq:int) -> None:
-        self.tf = math.log(1 + term_freq)
+        self.tf = math.log(term_freq) + 1
     def add_idf(self, term_idf: int) -> None:
         self.idf = term_idf
     def add_importance(self, i: list) -> None:
@@ -48,7 +48,7 @@ class Posting():
         return self.tfidf
     def __str__(self) -> str:
         if self.tfidf != 0:
-            return str({"doc_id": self.doc_id, "pos":self.pos, "important": self.important, "tfidf": self.tfidf})
+            return str({"doc_id": self.doc_id, "pos":self.pos, "important": self.important, 'tf': self.tf, "tfidf": self.tfidf})
         return str(self.__dict__)
         
 

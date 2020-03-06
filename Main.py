@@ -16,18 +16,22 @@ if __name__ == "__main__":
     #merge_total('indexes/')
     # Indexer.index_index()
     # Indexer.incerement_index()
+
+
+
     index = Indexer.index_index_object2()
     mapping = {}
-    query = "acm"
+    query = "learn machien learning"
     q = Query(query, index)
+    # print(q.tfidf())
     important = q.retrieve_query()
-    with open("indexes/doc_ids.txt", "r") as ids:
-        mapping = eval(ids.readline())
-
-    print(important)
-    for x in important[0:5]:
-        print(mapping[x[0]])
-        for p in x[1]:
-            print(p.get_doc_id())
+    # with open("indexes/doc_ids.txt", "r") as ids:
+    #     mapping = eval(ids.readline())
+    #
+    # print(important)
+    # for x in important[0:5]:
+    #     print(mapping[x[0]])
+    #     for p in x[1]:
+    #         print(p.get_doc_id())
 
 
