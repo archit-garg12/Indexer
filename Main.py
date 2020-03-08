@@ -19,6 +19,34 @@ if __name__ == "__main__":
 
 
 
+    # index_master = Indexer.index_index_object2(2)
+    # index_master2 = Indexer.index_index_object2(3)
+    # mapping = {}
+    # query = "machine learning"
+    # q = Query(query, index_master, index_master2)
+    # # print(q.tfidf())
+    # important = q.retrieve_query()
+    # with open("indexes_old/doc_ids.txt", "r") as ids:
+    #     mapping = eval(ids.readline())
+    # for x in important[0:20]:
+    #     print(mapping[x])
+    #     print(x)
+
+    index_master = Indexer.index_index_object2(2)
+    page_rank = Indexer.page_rank()
+    doc_ids = Indexer.doc_ids()
+    # index_master2 = {}
+    mapping = {}
+    query = "cristina lopes"
+    q = Query(query, index_master, page_rank, doc_ids)
+    # print(q.tfidf())
+    important = q.retrieve_query()
+    with open("indexes/doc_ids.txt", "r") as ids:
+        mapping = eval(ids.readline())
+    for x in important[0:10]:
+        print(mapping[x])
+        print(x)
+
     # index = Indexer.index_index_object2()
     # mapping = {}
     # query = "cristina lopes"
@@ -27,20 +55,9 @@ if __name__ == "__main__":
     # important = q.retrieve_query()
     # with open("indexes/doc_ids.txt", "r") as ids:
     #     mapping = eval(ids.readline())
+    #
+    # print(important)
     # for x in important[0:5]:
-    #     print(mapping[x])
-
-    index = Indexer.index_index_object2()
-    mapping = {}
-    query = "cristina lopes"
-    q = Query(query, index)
-    # print(q.tfidf())
-    important = q.retrieve_query()
-    with open("indexes/doc_ids.txt", "r") as ids:
-        mapping = eval(ids.readline())
-
-    print(important)
-    for x in important[0:5]:
-        print(mapping[x[0]])
-        for p in x[1]:
-            print(p.get_doc_id())
+    #     print(mapping[x[0]])
+    #     for p in x[1]:
+    #         print(p.get_doc_id())

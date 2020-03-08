@@ -4,12 +4,9 @@ from collections import defaultdict
 from Html_Reader import Html_Reader
 import math
 
-mapping = {}
-with open("indexes/doc_ids.txt", "r") as ids:
-    mapping = eval(ids.readline())
 
 class Query():
-    def __init__(self, query, index):
+    def __init__(self, query, index, page_rank, doc_ids):
         reader = Html_Reader()
         temp = []
         for c in query.strip("\n").lower():
@@ -22,6 +19,10 @@ class Query():
         self.query = [reader.porter_stem(x) for x in "".join(temp).split(" ")]
         #index is the ranges of letters to seek postions
         self.index = index
+        # page rank values
+        self.page_rank = page_rank
+        # doc id values
+        self.doc_ids = doc_ids
         # print(index)
         self._tfidf_dict, self._total_tfidf = self._tfidf()
         print('QUERY', self.query)
@@ -38,10 +39,11 @@ class Query():
         words = {}
 
         # new
+        # with open("indexes_old/index_master_final.txt", "r") as master:
         with open("indexes/index_master_final.txt", "r") as master:
             for word in self._tfidf_dict:
-                freq = self._tfidf_dict[word][0]
-                idf = self._tfidf_dict[word][1]
+                freq = self._tfidf_dict[word][0] # frequency of word in query
+                idf = self._tfidf_dict[word][1] # idf of word in query
                 print(freq, idf)
                 master.seek(self.index[word], 0)
                 postings_list = eval(master.readline().split("#")[1])
@@ -49,13 +51,27 @@ class Query():
                     p = Posting(eval(posting))
                     curr_doc_id = p.get_doc_id()
                     curr_doc_tfidf = p.get_tfidf()
-                    if curr_doc_id in doc_scores:
-                        doc_scores[curr_doc_id][0] += (curr_doc_tfidf*freq*idf)
-                        doc_scores[curr_doc_id][1] += (curr_doc_tfidf*curr_doc_tfidf)
-                    else:
-                        doc_scores[curr_doc_id] = [curr_doc_tfidf*freq*idf, curr_doc_tfidf*curr_doc_tfidf, curr_doc_id]
+                    if curr_doc_id not in doc_scores:
+                        doc_scores[curr_doc_id] = {
+                            'cos_numer': 0,
+                            'cos_denom': 0,
+                            'importance': 0,
+                            'link_val': 0
+                        }
+                    doc_scores[curr_doc_id]['cos_numer'] += (curr_doc_tfidf * freq * idf)
+                    doc_scores[curr_doc_id]['cos_denom'] += (curr_doc_tfidf * curr_doc_tfidf)
+                    doc_scores[curr_doc_id]['importance'] += len(p.get_importance())
+                    if word.lower() in self.doc_ids[curr_doc_id].lower():
+                        doc_scores[curr_doc_id]['link_val'] += idf
+                    # if curr_doc_id in doc_scores:
+                    #
+                    #     doc_scores[curr_doc_id][3] +=
+                    # else:
+                    #     doc_scores[curr_doc_id] = [curr_doc_tfidf*freq*idf, curr_doc_tfidf*curr_doc_tfidf, 0, len(p.get_importance())]
+                    # if word.lower() in self.doc_ids[curr_doc_id].lower():
+                    #     doc_scores[curr_doc_id][2] += idf
 
-        return sorted(doc_scores, key = lambda x: -self._rank(doc_scores[x]))
+        return sorted(doc_scores, key=lambda x: -self._rank(doc_scores[x], x))
 
 
         # old
@@ -104,12 +120,54 @@ class Query():
         # accum = sorted(accum, key = lambda x: -self._rank(x[1]))
         # return accum
 
-    def _rank(self, doc_score):
-        print(doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1]))
-        print(doc_score[0], math.sqrt(self._total_tfidf*doc_score[1]), mapping[doc_score[2]])
-        return doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1])
+    def _rank(self, doc_score, doc_id):
+        # print((doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1])))
+        # return (doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1]))
+        final = 1
+        # if importance > 0:
+        #     # importance value
+        #     final *= math.log(1 + importance)
+        # cosine value
+        final *= (doc_score['cos_numer']/math.sqrt(self._total_tfidf*doc_score['cos_denom']))
+        # print(doc_score['link_val'])
+        if doc_score['importance'] > 0:
+            final += math.log(1 + doc_score['importance'])
+        if doc_score['link_val'] > 0:
+            final += math.log(1 + doc_score['link_val'])
+        # # page rank value
+        # # final /= page_rank
+        # final += self.page_rank[doc_id]
+        return final
+
+    # def _in_url(self):
+
 
     def _tfidf(self):
+        # words = {}
+        # total_idf = 0.0
+        # with open("indexes_old/index_master_final.txt", "r") as master, open('indexes_old/index_master.txt', 'r') as master2:
+        #     for word in self.query:
+        #         if word in self.index:
+        #             if word in words:
+        #                 count = words[word][0]
+        #                 idf = words[word][1]
+        #                 new_count = count + 1
+        #                 total_idf -= (count*count*idf*idf)
+        #                 words[word][0] = new_count
+        #                 total_idf += (new_count*new_count*idf*idf)
+        #             else:
+        #                 master.seek(self.index[word], 0)
+        #                 master2.seek(self.index2[word], 0)
+        #                 x = eval(eval(master.readline().split('#')[1])[0])['tfidf']
+        #                 tfidf = float(x)
+        #                 # print(eval(eval(master2.readline().split('#')[1])[0]))
+        #                 tf = float(eval(eval(master2.readline().split('#')[1])[0])['tf'])
+        #                 print(tf)
+        #                 idf = tfidf/tf
+        #                 words[word] = [1, idf]
+        #                 total_idf += (idf*idf)
+        # return words, total_idf
+
         words = {}
         total_idf = 0.0
         with open("indexes/index_master_final.txt", "r") as master:
@@ -124,6 +182,7 @@ class Query():
                         total_idf += (new_count*new_count*idf*idf)
                     else:
                         master.seek(self.index[word], 0)
+                        # print(master.readline().split('#')[1])
                         idf = float(master.readline().split('#')[2])
                         words[word] = [1, idf]
                         total_idf += (idf*idf)
