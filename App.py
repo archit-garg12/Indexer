@@ -47,6 +47,7 @@ class QueryRequest(Resource):
         q = Query(query, index, page_rank, mapping, stop_words)
         start = time.time()
         current_heap = q.retrieve_query()
+        length = len(current_heap)
         end = time.time()
         for x in range(50):
             try:
@@ -55,7 +56,7 @@ class QueryRequest(Resource):
             except:
                 break
         final = end - start
-        return {query: l, "time": final}
+        return {query: l, "time": final , "len": length}
 
 class UpdateQuery(Resource):
     def get(self, amount):
