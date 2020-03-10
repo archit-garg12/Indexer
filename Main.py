@@ -4,6 +4,7 @@ from Url import Url
 from Html_Reader import Html_Reader
 from Query import Query
 from flask import Flask
+import time
 # from Query import Query
 
 
@@ -31,21 +32,25 @@ if __name__ == "__main__":
     # for x in important[0:20]:
     #     print(mapping[x])
     #     print(x)
-
     index_master = Indexer.index_index_object2(2)
+    # print('index index', time.time()-x)
     page_rank = Indexer.page_rank()
+    # print('page rank', time.time()-x)
     doc_ids = Indexer.doc_ids()
+    # print('doc ids', time.time()-x)
+    x = time.time()
     # index_master2 = {}
     mapping = {}
-    query = "cristina lopes"
+    query = "master of software engineering"
     q = Query(query, index_master, page_rank, doc_ids)
-    # print(q.tfidf())
+    print('initialize query', time.time()-x)
     important = q.retrieve_query()
+    print('retrieve query', time.time()-x)
     with open("indexes/doc_ids.txt", "r") as ids:
         mapping = eval(ids.readline())
-    for x in important[0:10]:
-        print(mapping[x])
-        print(x)
+    for i, y in enumerate(important[0:100]):
+        print(i, mapping[y])
+    print('end query', time.time() - x)
 
     # index = Indexer.index_index_object2()
     # mapping = {}
