@@ -8,7 +8,7 @@ import heapq
 
 
 class Query():
-    def __init__(self, query, index, page_rank, doc_ids):
+    def __init__(self, query, index, page_rank, doc_ids, stop_words):
         reader = Html_Reader()
         temp = []
         for c in query.strip("\n").lower():
@@ -18,7 +18,7 @@ class Query():
             else:
                 temp.append(" ")
         #prepped query to process using tokenization method
-        self.query = [reader.porter_stem(x) for x in "".join(temp).split(" ")]
+        self.query = [reader.porter_stem(x) for x in "".join(temp).split(" ") if x not in stop_words]
         #index is the ranges of letters to seek postions
         self.index = index
         # page rank values
@@ -72,14 +72,8 @@ class Query():
                         count += 1
                         heapq.heappush(accum, (-self._rank(doc_val, curr_doc_id), curr_doc_id))
                 print(word, time.time()-x, self._tfidf_dict[word])
-        # accum = []
-        # heapq.heapify(accum)
-        # for k,v in doc_scores.items():
-        #     heapq.heappush(accum, (-self._rank(v), k))
-        # print(accum)
         return accum
         # return sorted(doc_scores.items(), key=lambda x: -self._rank(x[1], x[0]))
-        # return list(accum)
 
 
     def _rank(self, doc_score, doc_id):
@@ -107,7 +101,7 @@ class Query():
     def _tfidf(self):
         words = {}
         total_idf = 0.0
-        with open("indexes/index_master_final_doc_id.txt", "r") as master:
+        with open("indexes/index_master_final.txt", "r") as master:
             for word in self.query:
                 if word in self.index:
                     if word in words:

@@ -42,7 +42,7 @@ if __name__ == "__main__":
     x = time.time()
     # index_master2 = {}
     mapping = {}
-    query = "master of software engineering"
+    query = "acm"
     q = Query(query, index_master, page_rank, doc_ids)
     print('initialize query', time.time()-x)
     important = q.retrieve_query()
