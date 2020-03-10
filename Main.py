@@ -5,6 +5,7 @@ from Html_Reader import Html_Reader
 from Query import Query
 from flask import Flask
 import time
+import heapq
 # from Query import Query
 
 
@@ -45,12 +46,15 @@ if __name__ == "__main__":
     q = Query(query, index_master, page_rank, doc_ids)
     print('initialize query', time.time()-x)
     important = q.retrieve_query()
-    print('retrieve query', time.time()-x)
+    # print('retrieve query', time.time()-x)
     with open("indexes/doc_ids.txt", "r") as ids:
         mapping = eval(ids.readline())
-    for i, y in enumerate(important[0:100]):
-        print(i, mapping[y])
-    print('end query', time.time() - x)
+    for i in range(20):
+        print(mapping[important[0][1]])
+        heapq.heappop(important)
+    # for i, y in enumerate(important[0:20]):
+    #     print(i, mapping[y[0]], y[1]['cos_val'])
+    # print('end query', time.time() - x)
 
     # index = Indexer.index_index_object2()
     # mapping = {}

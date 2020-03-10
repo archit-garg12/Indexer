@@ -42,9 +42,11 @@ class Query():
                 x = time.time()
                 freq = self._tfidf_dict[word][0] # frequency of word in query
                 idf = self._tfidf_dict[word][1] # idf of word in query
-                print(freq, idf)
+                # print(freq, idf)
                 master.seek(self.index[word], 0)
                 postings_list = eval(master.readline().split("#")[1])
+                accum = []
+                heapq.heapify(accum)
                 for posting in postings_list:
                     if count > 1000:
                         break
@@ -56,42 +58,50 @@ class Query():
                             doc_scores[curr_doc_id] = {
                                 'cos_numer': 0,
                                 'cos_denom': 0,
+                                'cos_val': 0,
                                 'importance': 0,
                                 'link_val': 0
                             }
+                        doc_val = doc_scores[curr_doc_id]
                         doc_scores[curr_doc_id]['cos_numer'] += (curr_doc_tfidf * freq * idf)
                         doc_scores[curr_doc_id]['cos_denom'] += (curr_doc_tfidf * curr_doc_tfidf)
+                        doc_scores[curr_doc_id]['cos_val'] = (doc_val['cos_numer']/math.sqrt(self._total_tfidf*doc_val['cos_denom']))
                         doc_scores[curr_doc_id]['importance'] += len(p.get_importance())
                         if word.lower() in self.doc_ids[curr_doc_id].lower():
                             doc_scores[curr_doc_id]['link_val'] += idf
-
                         count += 1
+                        heapq.heappush(accum, (-self._rank(doc_val, curr_doc_id), curr_doc_id))
                 print(word, time.time()-x, self._tfidf_dict[word])
-        accum = []
-        heapq.heapify(accum)
+        # accum = []
+        # heapq.heapify(accum)
         # for k,v in doc_scores.items():
         #     heapq.heappush(accum, (-self._rank(v), k))
-        return sorted(doc_scores, key=lambda x: -self._rank(doc_scores[x]))
+        # print(accum)
+        return accum
+        # return sorted(doc_scores.items(), key=lambda x: -self._rank(x[1], x[0]))
         # return list(accum)
 
 
-    def _rank(self, doc_score):
+    def _rank(self, doc_score, doc_id):
         # print((doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1])))
         # return (doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1]))
-        final = 1
+        # final = 1
         # if importance > 0:
         #     # importance value
         #     final *= math.log(1 + importance)
-        # cosine value
-        final *= (doc_score['cos_numer']/math.sqrt(self._total_tfidf*doc_score['cos_denom']))
+        # cosine valued
+        # print(doc_score)
+        final = doc_score['cos_val']
         # print(doc_score['link_val'])
         if doc_score['importance'] > 0:
             final += math.log(1 + doc_score['importance'])
         if doc_score['link_val'] > 0:
-            final += math.log(1 + doc_score['link_val'])
+            final += math.log(1 + doc_score['link_val'])/2
+
         # # page rank value
         # # final /= page_rank
-        # final += math.sqrt(self.page_rank[doc_id])
+        final += self.page_rank[doc_id]
+
         return final
 
     def _tfidf(self):
