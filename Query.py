@@ -35,6 +35,8 @@ class Query():
         useful_query = {}
         doc_scores = {}
         words = {}
+        accum = []
+        heapq.heapify(accum)
 
         with open("indexes/index_master_final.txt", "r") as master:
             for word in self._tfidf_dict:
@@ -45,32 +47,30 @@ class Query():
                 # print(freq, idf)
                 master.seek(self.index[word], 0)
                 postings_list = eval(master.readline().split("#")[1])
-                accum = []
-                heapq.heapify(accum)
                 for posting in postings_list:
-                    if count > 1000:
-                        break
-                    else:
-                        p = Posting(eval(posting))
-                        curr_doc_id = p.get_doc_id()
-                        curr_doc_tfidf = p.get_tfidf()
-                        if curr_doc_id not in doc_scores:
-                            doc_scores[curr_doc_id] = {
-                                'cos_numer': 0,
-                                'cos_denom': 0,
-                                'cos_val': 0,
-                                'importance': 0,
-                                'link_val': 0
-                            }
-                        doc_val = doc_scores[curr_doc_id]
-                        doc_scores[curr_doc_id]['cos_numer'] += (curr_doc_tfidf * freq * idf)
-                        doc_scores[curr_doc_id]['cos_denom'] += (curr_doc_tfidf * curr_doc_tfidf)
-                        doc_scores[curr_doc_id]['cos_val'] = (doc_val['cos_numer']/math.sqrt(self._total_tfidf*doc_val['cos_denom']))
-                        doc_scores[curr_doc_id]['importance'] += len(p.get_importance())
-                        if word.lower() in self.doc_ids[curr_doc_id].lower():
-                            doc_scores[curr_doc_id]['link_val'] += idf
-                        count += 1
-                        heapq.heappush(accum, (-self._rank(doc_val, curr_doc_id), curr_doc_id))
+                    # if count > 5000:
+                    #     break
+                    # else:
+                    p = Posting(eval(posting))
+                    curr_doc_id = p.get_doc_id()
+                    curr_doc_tfidf = p.get_tfidf()
+                    if curr_doc_id not in doc_scores:
+                        doc_scores[curr_doc_id] = {
+                            'cos_numer': 0,
+                            'cos_denom': 0,
+                            'cos_val': 0,
+                            'importance': 0,
+                            'link_val': 0
+                        }
+                    doc_val = doc_scores[curr_doc_id]
+                    doc_scores[curr_doc_id]['cos_numer'] += (curr_doc_tfidf * freq * idf)
+                    doc_scores[curr_doc_id]['cos_denom'] += (curr_doc_tfidf * curr_doc_tfidf)
+                    doc_scores[curr_doc_id]['cos_val'] = (doc_val['cos_numer']/math.sqrt(self._total_tfidf*doc_val['cos_denom']))
+                    doc_scores[curr_doc_id]['importance'] += len(p.get_importance())
+                    if word.lower() in self.doc_ids[curr_doc_id].lower():
+                        doc_scores[curr_doc_id]['link_val'] += idf
+                    count += 1
+                    heapq.heappush(accum, (-self._rank(doc_val, curr_doc_id), curr_doc_id))
                 print(word, time.time()-x, self._tfidf_dict[word])
         return accum
         # return sorted(doc_scores.items(), key=lambda x: -self._rank(x[1], x[0]))
