@@ -121,7 +121,6 @@ class Query():
                         # setup line
                         master.seek(self.index[word], 0)
                         line = master.readline().split('#')
-                        postings_list = eval(line[1])
 
                         # idf processing
                         idf = float(line[2])

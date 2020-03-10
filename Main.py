@@ -46,7 +46,7 @@ if __name__ == "__main__":
     q = Query(query, index_master, page_rank, doc_ids)
     print('initialize query', time.time()-x)
     important = q.retrieve_query()
-    # print('retrieve query', time.time()-x)
+    print('retrieve query', time.time()-x)
     with open("indexes/doc_ids.txt", "r") as ids:
         mapping = eval(ids.readline())
     for i in range(20):
