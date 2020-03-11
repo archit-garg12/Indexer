@@ -11,12 +11,9 @@ class Html_Reader:
         self.SIMHASH_URLS = {}
     def read_file(self, root: 'etree', doc_id: int, inverted_index: {str:[Posting]}) -> bool:
         word = []
-                        
-        
-
         position = 1
         position_words = defaultdict(list)
-        importance_word = defaultdict(list)
+        importance_word = defaultdict(int)
         for i in root.xpath('/html')[0].getiterator('*'):
             if i.tag not in {"script", "style"}:
                 if i.text is not None:
@@ -31,10 +28,13 @@ class Html_Reader:
                             temp.append(" ")
                     for words in "".join(temp).split(" "):
                         if words != "":
-                            if i.tag in ["h1", "h2", "h3", "bold", "strong", "title"]:
-                                importance_word[self.porter_stem(words)].append(position)
-                            else:
-                                position_words[self.porter_stem(words)].append(position)
+                            position_words[self.porter_stem(words)].append(position)
+                            if i.tag in ["title"]:
+                                importance_word[self.porter_stem(words)] += 3
+                            elif i.tag in ["h1"]:
+                                importance_word[self.porter_stem(words)] += 2
+                            elif i.tag in ["h2", "h3", "bold", "strong"]:
+                                importance_word[self.porter_stem(words)] += 1
                             position += 1
         # keeps a variable of a string of all the words to create a Simhash value
         val = ' '.join(word)
@@ -48,15 +48,15 @@ class Html_Reader:
         for key, val in position_words.items():
             post = Posting(doc_id)
             post.add_pos(val)
-            post.add_tf(len(val) + len(importance_word[key]))
+            post.add_tf(len(val))
             post.add_importance(importance_word[key])
             inverted_index[key].append(post)
-        for key, val in importance_word.items():
-            if key not in position_words:
-                post = Posting(doc_id)
-                post.add_tf(len(importance_word[key]))
-                post.add_importance(importance_word[key])
-                inverted_index[key].append(post)
+        # for key, val in importance_word.items():
+        #     if key not in position_words:
+        #         post = Posting(doc_id)
+        #         post.add_tf(len(importance_word[key]))
+        #         post.add_importance(importance_word[key])
+        #         inverted_index[key].append(post)
         return True
 
     def porter_stem(self, word):
