@@ -44,31 +44,42 @@ class QueryRequest(Resource):
      def get(self, query):
         l = []
         global current_heap
+        global length
+        global times
         q = Query(query, index, page_rank, mapping, stop_words)
         start = time.time()
         current_heap = q.retrieve_query()
-        length = len(current_heap)
-        end = time.time()
         for x in range(50):
             try:
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
             except:
                 break
+        end = time.time()
+        length = len(l)
         final = end - start
-        return {query: l, "time": final , "len": length}
+        times = final
+        return {query: l, "time": times , "len": length}
 
 class UpdateQuery(Resource):
     def get(self, amount):
         l = []
         global current_heap
+        global length
+        global times
+
+        start = time.time()
         for x in range(amount):
             try:
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
             except:
                 break
-        return {"data": l}
+        end= time.time()
+        length += len(l)
+        final = end-start
+        times +=  final - start
+        return {"data": l, "time": times, "len", length}
 
 
 
