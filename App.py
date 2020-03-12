@@ -79,7 +79,7 @@ class UpdateQuery(Resource):
         length += len(l)
         final = end-start
         times +=  final - start
-        return {"data": l, "time": times, "len", length}
+        return {"data": l, "time": times, "len": length}
 
 
 
