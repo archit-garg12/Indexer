@@ -10,7 +10,7 @@ DOC_ID_DICT = dict()
 
 def get_all_files(dev_directory):
 
-    file_count_name = 'indexes/inverted_index_'
+    file_count_name = 'indexes2/inverted_index_'
     file_count = 0
     file_count_name_count = 1
     doc_id = 1
@@ -66,21 +66,21 @@ def write_to_index(inverted_index, file_count_name_count, file_count_name):
 
 def index_index():
     alpha = {}
-    with open('indexes_old/index_master.txt', "r") as master:
+    with open('indexes/index_master_final.txt', "r") as master:
         seek = 0
         for lines in master:
             line = lines.split("#")
             alpha[line[0]] = seek
             seek += len(lines)
-    with open("indexes_old/index_index3.txt", "w+") as i:
+    with open("indexes2/index_index2.txt", "w+") as i:
         i.write(str(alpha))
 
-def index_index_object2(num):
+def index_index_object2(doc):
     # with open("indexes_old/index_index" + str(num) + ".txt", "r") as i:
     #     alpha = eval(i.readline().strip("\n"))
     # return alpha
 
-    with open("indexes/index_index" + str(num) + ".txt", "r") as i:
+    with open(doc, "r") as i:
         alpha = eval(i.readline().strip("\n"))
     return alpha
 
@@ -94,13 +94,13 @@ def incerement_index():
                 fin[x-1] = p[x]
             final.write(str(fin))
 
-def page_rank():
-    with open("indexes/pagerank.txt", 'r') as p:
+def page_rank(doc):
+    with open(doc, 'r') as p:
         alpha = eval(p.readline().strip('\n'))
     return alpha
 
-def doc_ids():
-    with open('indexes/doc_ids.txt', 'r') as d:
+def doc_ids(doc):
+    with open(doc, 'r') as d:
         alpha = eval(d.readline().strip('\n'))
     return alpha
 

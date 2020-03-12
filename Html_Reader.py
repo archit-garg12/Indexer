@@ -72,7 +72,7 @@ class Html_Reader:
                 wording = word.split("#")
                 temp = eval(wording[1])
                 final = []
-                idf = math.log(43632/len(temp))
+                idf = math.log(43409/len(temp))
                 for x in temp:
                     p = Posting(eval(x))
                     p.add_idf(idf)

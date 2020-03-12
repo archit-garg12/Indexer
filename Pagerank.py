@@ -4,7 +4,7 @@ from Url import Url
 import matplotlib.pyplot as plt
  
  
-with open("indexes/doc_ids.txt", "r") as ids:
+with open("indexes2/doc_ids.txt", "r") as ids:
     mapping = {v: k for k, v in eval(ids.readline()).items()}
 
 def create_graph():
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # nx.draw_networkx_labels(G, pos)
     # plt.show()
     page_rank = nx.pagerank(G)
-    with open("indexes/pagerank.txt", "w+") as ranks:
+    with open("indexes2/pagerank.txt", "w+") as ranks:
         ranks.write(str(page_rank))
 
 

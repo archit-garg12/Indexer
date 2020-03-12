@@ -17,40 +17,55 @@ class Query():
                 temp.append(c)
             else:
                 temp.append(" ")
-        #prepped query to process using tokenization method
-        self.query = [reader.porter_stem(x) for x in "".join(temp).split(" ") if x not in stop_words]
-        #index is the ranges of letters to seek postions
+        # prepped query to process using tokenization method
+        self.query = []
+        self.total_words = []
+        total_count = 0
+        stop_words_count = 0
+        for x in "".join(temp).split(" "):
+            word = reader.porter_stem(x)
+            total_count += 1
+            self.total_words.append(word)
+            if word in stop_words:
+                stop_words_count += 1
+            else:
+                self.query.append(word)
+        if float(stop_words_count) / float(total_count) > 0.7:
+            self.threshold = 100
+            self.query = self.total_words
+        else:
+            self.threshold = 784
+
+        # index is the ranges of letters to seek postions
         self.index = index
+
         # page rank values
         self.page_rank = page_rank
+
         # doc id values
         self.doc_ids = doc_ids
-        # print(index)
-        self._tfidf_dict, self._total_tfidf = self._tfidf()
-        print('QUERY', self.query)
 
+        # setup
+        self._tfidf_dict, self._total_tfidf = self._setup()
+
+        print(self.query)
 
     def retrieve_query(self):
 
-        useful_query = {}
         doc_scores = {}
-        words = {}
         accum = []
         heapq.heapify(accum)
-
-        with open("indexes/index_master_final.txt", "r") as master:
+        with open("indexes2/index_master_final.txt", "r") as master:
+            print(self._tfidf_dict)
             for word in self._tfidf_dict:
                 count = 0
-                x = time.time()
                 freq = self._tfidf_dict[word][0] # frequency of word in query
                 idf = self._tfidf_dict[word][1] # idf of word in query
-                # print(freq, idf)
                 master.seek(self.index[word], 0)
                 postings_list = eval(master.readline().split("#")[1])
                 for posting in postings_list:
-                    # if count > 5000:
-                    #     break
-                    # else:
+                    if count > self.threshold:
+                        break
                     p = Posting(eval(posting))
                     curr_doc_id = p.get_doc_id()
                     curr_doc_tfidf = p.get_tfidf()
@@ -66,44 +81,38 @@ class Query():
                     doc_scores[curr_doc_id]['cos_numer'] += (curr_doc_tfidf * freq * idf)
                     doc_scores[curr_doc_id]['cos_denom'] += (curr_doc_tfidf * curr_doc_tfidf)
                     doc_scores[curr_doc_id]['cos_val'] = (doc_val['cos_numer']/math.sqrt(self._total_tfidf*doc_val['cos_denom']))
-                    doc_scores[curr_doc_id]['importance'] += len(p.get_importance())
+                    doc_scores[curr_doc_id]['importance'] += p.get_importance()
                     if word.lower() in self.doc_ids[curr_doc_id].lower():
                         doc_scores[curr_doc_id]['link_val'] += idf
                     count += 1
                     heapq.heappush(accum, (-self._rank(doc_val, curr_doc_id), curr_doc_id))
-                print(word, time.time()-x, self._tfidf_dict[word])
+                # print(word, time.time()-x, self._tfidf_dict[word])
         return accum
         # return sorted(doc_scores.items(), key=lambda x: -self._rank(x[1], x[0]))
 
-
     def _rank(self, doc_score, doc_id):
-        # print((doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1])))
-        # return (doc_score[0]/math.sqrt(self._total_tfidf*doc_score[1]))
-        # final = 1
-        # if importance > 0:
-        #     # importance value
-        #     final *= math.log(1 + importance)
-        # cosine valued
-        # print(doc_score)
+        # cosine value
         final = doc_score['cos_val']
-        # print(doc_score['link_val'])
-        if doc_score['importance'] > 0:
-            final += math.log(1 + doc_score['importance'])
-        if doc_score['link_val'] > 0:
-            final += math.log(1 + doc_score['link_val'])/2
 
-        # # page rank value
-        # # final /= page_rank
+        # importance value
+        final += math.log(1 + doc_score['importance'])
+
+        # link value
+        final += math.log(1 + doc_score['link_val'])/2
+
+        # page rank value
         final += self.page_rank[doc_id]
 
         return final
 
-    def _tfidf(self):
+    def _setup(self):
         words = {}
         total_idf = 0.0
-        with open("indexes/index_master_final.txt", "r") as master:
+        query_list = []
+        with open("indexes2/index_master_final.txt", "r") as master:
             for word in self.query:
                 if word in self.index:
+                    query_list.append(word)
                     if word in words:
                         count = words[word][0]
                         idf = words[word][1]
