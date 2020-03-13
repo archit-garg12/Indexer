@@ -101,7 +101,7 @@ class Query():
         final += math.log(1 + doc_score['link_val'])/2
 
         # page rank value
-        final += self.page_rank[doc_id]
+        final += self.page_rank[doc_id]*100
 
         return final
 

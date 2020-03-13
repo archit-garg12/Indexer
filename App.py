@@ -56,6 +56,8 @@ class QueryRequest(Resource):
             try:
                 while current_heap[0][1] in words:
                     heappop(current_heap)
+                print(current_heap[0][1])
+                words.add(current_heap[0][1])
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
             except:
@@ -76,10 +78,14 @@ class UpdateQuery(Resource):
         global current_heap
         global length
         global times
+        global words
 
         start = time.time()
         for x in range(amount):
             try:
+                while current_heap[0][1] in words:
+                    heappop(current_heap)
+                words.add(current_heap[0][1])
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
             except:
