@@ -27,7 +27,7 @@ class App extends Component {
         console.log(this.state.query)
         var self = this;
         axios.get("http://127.0.0.1:5000/" + this.state.query).then(function(response){
-                                                                    self.setState({responses: response['data'][self.state.query]})
+                                                                    self.setState({responses: response['data']['data']})
                                                                     self.setState({time: response['data']['time']})
                                                                     self.setState({size: response['data']['len']})
                                                                     self.setState({display: true})
@@ -42,7 +42,8 @@ class App extends Component {
                                                                     for (var i in response['data']['data']){
                                                                         temp.push(response['data']['data'][i])
                                                                     }
-                                                        
+                                                                    self.setState({size: response['data']['len']})
+                                                                    self.setState({time:response['data']['time']})
                                                                     self.setState({responses: temp})
                                                                     })
     }
@@ -53,7 +54,7 @@ class App extends Component {
                           <div style = {{height: 60}}>
                           <Card>
                           <Card.Body>
-                          <h1 style = {{fontSize: 15, paddingLeft: 13, color: 'gray'}}>About {this.state.size} results ({this.state.time} seconds)</h1>
+                          <h1 style = {{fontSize: 15, paddingLeft: 12, color: 'gray'}}>Showing {this.state.size} results ({this.state.time} seconds)</h1>
                           
                           </Card.Body>
                           </Card>
@@ -64,6 +65,7 @@ class App extends Component {
         
             // Outer loop to create parent
         this.state.responses.map((r) =>{
+                
                 //Inner loop to create children
                                  
                 list.push(
