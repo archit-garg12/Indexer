@@ -12,9 +12,10 @@ from heapq import heappop
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
-index = Indexer.index_index_object2(2)
-page_rank = Indexer.page_rank()
-mapping = Indexer.doc_ids()
+main = 'indexes2/'
+index = Indexer.index_index_object2(main + "index_index2.txt")
+page_rank = Indexer.page_rank(main+"pagerank.txt")
+mapping = Indexer.doc_ids(main+"doc_ids.txt")
 current_heap = 0
 
 stop_words_list = ['which', 'my', 'all', "when's", 'the', "you'd", 'from', 'be', 'down', 'until', 'by', 'only', "we're",
@@ -46,20 +47,28 @@ class QueryRequest(Resource):
         global current_heap
         global length
         global times
+        global words
+        words = set()
         q = Query(query, index, page_rank, mapping, stop_words)
         start = time.time()
         current_heap = q.retrieve_query()
         for x in range(50):
             try:
+                while current_heap[0][1] in words:
+                    heappop(current_heap)
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
             except:
                 break
         end = time.time()
         length = len(l)
+
         final = end - start
         times = final
-        return {query: l, "time": times , "len": length}
+        print('time', times)
+        print('end', end)
+        print('start', start)
+        return {'data': l, "time": times , "len": length}
 
 class UpdateQuery(Resource):
     def get(self, amount):
@@ -75,10 +84,10 @@ class UpdateQuery(Resource):
                 heappop(current_heap)
             except:
                 break
-        end= time.time()
+        end = time.time()
         length += len(l)
         final = end-start
-        times +=  final - start
+        times +=  final
         return {"data": l, "time": times, "len": length}
 
 
