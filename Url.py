@@ -14,12 +14,7 @@ class Url:
 
     def get_html(self) -> 'Etree':
         html_value = self._content
-        print(1)
         parser = etree.HTMLParser(encoding="utf-8")
-        print(2)
-        # print(StringIO(html_value))
         tree = etree.parse(StringIO(html_value), parser)
-        print(3)
-        print(type(tree.getroot()))
         return tree.getroot()
 

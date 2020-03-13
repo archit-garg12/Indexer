@@ -1,7 +1,5 @@
 from flask import Flask
-from Posting import Posting
 import Indexer
-from Url import Url
 from Html_Reader import Html_Reader
 from Query import Query
 from flask_restful import Resource, Api
@@ -56,7 +54,6 @@ class QueryRequest(Resource):
             try:
                 while current_heap[0][1] in words:
                     heappop(current_heap)
-                print(current_heap[0][1])
                 words.add(current_heap[0][1])
                 l.append(mapping[current_heap[0][1]])
                 heappop(current_heap)
@@ -67,9 +64,6 @@ class QueryRequest(Resource):
 
         final = end - start
         times = final
-        print('time', times)
-        print('end', end)
-        print('start', start)
         return {'data': l, "time": times , "len": length}
 
 class UpdateQuery(Resource):

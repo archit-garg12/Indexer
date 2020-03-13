@@ -1,4 +1,3 @@
-import lxml
 from nltk.stem.snowball import SnowballStemmer
 from collections import defaultdict
 from Posting import Posting
@@ -19,7 +18,6 @@ class Html_Reader:
                 if i.text is not None:
                     word.append(i.text)
                     temp = []
-                    prevPos = position
                     for c in i.text.strip("\n").lower():
                         char_number = ord(c)
                         if (48 <= char_number <= 57) or (97 <= char_number <= 122):
@@ -51,12 +49,6 @@ class Html_Reader:
             post.add_tf(len(val))
             post.add_importance(importance_word[key])
             inverted_index[key].append(post)
-        # for key, val in importance_word.items():
-        #     if key not in position_words:
-        #         post = Posting(doc_id)
-        #         post.add_tf(len(importance_word[key]))
-        #         post.add_importance(importance_word[key])
-        #         inverted_index[key].append(post)
         return True
 
     def porter_stem(self, word):
@@ -64,8 +56,6 @@ class Html_Reader:
 
 
     def read_master_for_id(self, master: str, write_file:str):
-        print("inheere")
-        print(master)
         wf = open(write_file, "w+")
         with open(master , "r+") as mas:
             for word in mas:
@@ -81,9 +71,3 @@ class Html_Reader:
                 final = list(sorted(final , key= lambda x: -x.get_tfidf()))
                 wf.write(wording[0]+ "#" + str([str(x) for x in final]) + "#" + str(idf) + '#\n')
         wf.close()
-
-
-
-
-
-

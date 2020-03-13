@@ -1,0 +1,74 @@
+GOOD QUERIES:
+
+
+Gaming
+
+
+mswe
+
+
+Cristina Lopes
+
+
+Summer Internship
+
+
+Machine learning and neural network
+
+
+Database
+
+
+Management
+
+
+Software Architecture
+
+
+IoT
+
+
+Formal Languages and Automata
+
+
+BAD QUERIES:
+
+
+Black Box
+To fix this query we started to weigh if the term query shows up in the link since it is usually a good indicator of whether the page is relevant or not. It is similar to weighting a title and therefore is general.
+
+
+Healthcare
+Weighted titles and h1 tags more in order to improve the effectiveness of the search as titles are a stronger indication of important content over bold or strong tags.
+
+
+Web Development
+This query improved by both including weight to the link and a higher weight to the title of the page as it gave more relevant information.
+
+
+To be or not to be
+Implemented a threshold for stop word queries to reduce the number of results and therefore the amount of time required to return the results increasing the efficiency of the search engine
+
+
+Red turtle
+Used cosine similarity to actually return a decent amount of results instead of using exclusively boolean and returning no results
+
+
+Master of software engineering
+In order to speed up this query, we implemented a heap instead of sorting all the postings by rank value during query retrieval. To match this in the front end we initially show only 50 results and the user can load more results by clicking the button.
+
+
+Bandwidth
+This improved by weighting titles more than other terms in the document.
+
+
+Big Data
+This works well after reducing bold tags cost compared to title costs.
+
+
+Trac
+To improve this query we used PageRank as there were many links that pointed to relevant pages of this query but were not originally showing up when using only cosine values.
+
+
+DANN Data
+This was improved by PageRank as it provided many helpful links to DANN datasets instead of just providing raw text which isn’t as helpful when looking for data.

@@ -1,4 +1,3 @@
-import json
 import os
 from collections import defaultdict
 from Url import Url
@@ -22,15 +21,11 @@ def get_all_files(dev_directory):
 
             for file in os.listdir(dev_directory + direct):
                 
-                # print(doc_id)
                 # posting(file) returns url and stuff for DOC_ID_DICT and for tokenizer
                 temp = Url(dev_directory + direct + '/' + file)
-                print(dev_directory + direct + '/' + file)
                 try:
                     read = reader.read_file(temp.get_html(), doc_id, inverted_index)
-                    print(read)
                     if read:
-                        print(doc_id)
                         # write to a file the current inverted index, if it is above a certain file count
                         file_count += 1
                         DOC_ID_DICT[doc_id] = temp.get_url()
@@ -76,10 +71,6 @@ def index_index():
         i.write(str(alpha))
 
 def index_index_object2(doc):
-    # with open("indexes_old/index_index" + str(num) + ".txt", "r") as i:
-    #     alpha = eval(i.readline().strip("\n"))
-    # return alpha
-
     with open(doc, "r") as i:
         alpha = eval(i.readline().strip("\n"))
     return alpha
@@ -103,33 +94,3 @@ def doc_ids(doc):
     with open(doc, 'r') as d:
         alpha = eval(d.readline().strip('\n'))
     return alpha
-
-
-def test():
-    # for file in os.listdir('DEV/aiclub_ics_uci_edu'):
-    #     print(file)
-    x = dict()
-    file_count_name = 'indexes/inverted_index_1'
-
-    inv = defaultdict(list)
-    temp = Url('DEV/aiclub_ics_uci_edu/8ef6d99d9f9264fc84514cdd2e680d35843785310331e1db4bbd06dd2b8eda9b.json')
-    reader = Html_Reader()
-    reader.read_file(temp.get_html(), 1, inv)
-    # print(str(inv["ami"][0]))
-    with open(file_count_name, 'w+', encoding = 'utf-8') as count:
-        count.write('{\n')
-        s = sorted(inv.items(), key=lambda x: x[0])
-        for k, v in s:
-            print([x for x in v])
-            count.write(str(k) + '#' +  str([str(x) for x in v]) + '#\n')
-        count.write('}')
-    with open('indexes/data.json', 'w') as fp:
-        for k,v in inv.items():
-            temp = {}
-            temp[k] = [c.__dict__ for c in v]
-            json.dump(temp , fp)
-
-
-if __name__ == '__main__':
-    #get_all_files('DEV/')
-    test()

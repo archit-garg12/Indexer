@@ -17,6 +17,9 @@ Heapq
 networkx
     Used to create a digraph of links used in page rank
 
+Simhash
+    Used to simhash the webpages
+
 
 CONFIGURATION
 
@@ -48,7 +51,7 @@ Html_Reader.py:
 
     Read_file():
         This function parses through an etree root object which is able to retrieve the text from a webpage.
-        We tokenize this page, and add the word and posting to our inverted index, accordingly.
+        We tokenize this page and Simhash it, and add the word and posting to our inverted index, accordingly.
 
     read_master_for_id():
         This function opens the master inverted index, and adds a tfidf score for each posting, and
@@ -87,5 +90,9 @@ Url.py:
 
     This module parses through the json object in the DEV folder, returning an etree.root object to parse through in
     Html_reader.py.
+
+report.txt:
+
+    Report of all the good and bad queries
 
 

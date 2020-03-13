@@ -17,15 +17,12 @@ def create_graph():
                 
                 for file in os.listdir(dev_directory + direct):
                     
-                    # print(doc_id)
                     # posting(file) returns url and stuff for DOC_ID_DICT and for tokenizer
                     temp = Url(dev_directory + direct + '/' + file)
                     if temp.get_url() in mapping:
                         list_of_links = get_all_sublinks(temp.get_html(), temp.get_url())
                         graph.add_edges_from([(mapping[temp.get_url()], final_edge)for final_edge in list_of_links])
                         if mapping[temp.get_url()] == 34480 or mapping[temp.get_url()] == 34479:
-                            print(mapping[temp.get_url()], temp.get_url(), list_of_links)
-                        # print([(doc_id, final_edge)for final_edge in list_of_links])
     return graph
 def get_all_sublinks(root, url):
     all_links = []

@@ -1,25 +1,10 @@
-from Posting import Posting
 import Indexer
-from Url import Url
 from Html_Reader import Html_Reader
 from Query import Query
-from flask import Flask
-from merge import merge_total
 import time
 import heapq
-# from Query import Query
-
-
 
 if __name__ == "__main__":
-
-    # reader = Html_Reader()
-    # reader.read_master_for_id("indexes2/index_master.txt", "indexes2/index_master_final.txt")
-    # Indexer.get_all_files('DEV/')
-    # merge_total('indexes2/')
-    # Indexer.index_index()
-    # Indexer.incerement_index()
-
     stop_words_list = ['which', 'my', 'all', "when's", 'the', "you'd", 'from', 'be', 'down', 'until', 'by', 'only',
                        "we're",
                        "couldn't", 'your', 'her', 'should', 'but', 'at', 'having', 'ours', 'doing', "who's", 'during',
@@ -60,18 +45,11 @@ if __name__ == "__main__":
     query = "master of software engineering"
     q = Query(query, index_master, page_rank, doc_ids, stop_words)
     important = q.retrieve_query()
-    print('retrieve query', time.time()-x)
     with open(main + "doc_ids.txt", "r") as ids:
         mapping = eval(ids.readline())
-    # print(important)
     words = set()
-    print(len(important))
     for i in range(20):
         while important[0][1] in words:
             heapq.heappop(important)
-        print(important[0][1], mapping[important[0][1]])
         words.add(important[0][1])
         heapq.heappop(important)
-    # for i, y in enumerate(important[0:20]):
-    #     print(i, mapping[y[1]], y[1]['cos_val'])
-    print('end query', time.time() - x)
